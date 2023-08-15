@@ -6,12 +6,27 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Find',
       component: HomeView
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/breeds',
+      name: 'Breeds',
+      component: () => import('../views/AboutView.vue')
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: () => import('../views/AboutView.vue')
+    },
+    {
+      path: '/favorites',
+      name: 'Favorites',
+      component: () => import('../views/AboutView.vue')
+    },
+    {
+      path: '/upload',
+      name: 'Share kitty',
       component: () => import('../views/AboutView.vue')
     }
   ]
