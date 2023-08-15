@@ -1,9 +1,9 @@
 <template>
   <main>
-    <TheMain />
+    <VoteCard />
   </main>
 </template>
 
 <script setup>
-import TheMain from '../components/TheMain.vue'
+import VoteCard from '../components/VoteCard.vue'
 </script>
