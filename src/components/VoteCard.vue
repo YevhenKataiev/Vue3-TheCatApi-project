@@ -9,7 +9,7 @@
     </div>
     <div class="panel">
       <VoteCardBtn action="dislike" @dislike="handleChange('dislike')"/>
-      <VoteCardBtn action="fav" :isFav="isFavorite" @fav="handleChange('fav')"/>
+      <VoteCardBtn action="fav" :isFav="!!favoriteId" @fav="favorKity()"/>
       <VoteCardBtn action="like" @like="handleChange('like')"/>
     </div>
   </div>
@@ -23,7 +23,7 @@ import axios from 'axios';
 import { get } from 'lodash';
 import { user_id, api_url } from '../help';
 const breed = ref({});
-const isFavorite = ref(false);
+const favoriteId = ref('');
 const loading = ref(true);
 const config = {
     headers: { 'x-api-key' : user_id }
@@ -35,31 +35,46 @@ const getKity = async() => {
     breed.value = data[0]
     const fav = await axios.get(
       `${api_url}/favorites?image_id=${breed.value.id}`, config);
-    isFavorite.value = !!get(fav, 'id', false);
+    favoriteId.value = get(fav, 'id','');
   } catch (error) {
-    router.push({ name: 'error', params: { error: get(error, 'response.data') } })
+    // router.push({ name: 'error', params: { error: get(error, 'response.data') } })
   } finally {
     loading.value = false;
   }  
 }
-const updateKity = async (prop) => {
-  let end = 'favourites';
+const voteKity = async (prop) => {
   const body = {
     image_id: breed.value.id,
+    value: prop === 'like' ? 1: -1,
   };
-  if (prop !== 'fav') {
-    body.value = prop === 'like' ? 1: -1;
-    end = 'votes';
-  }
   try {
-    const { data } = await axios.post(`${api_url}/${end}`, body, config);
-    if (data.message === 'SUCCESS') {
-      isFavorite.value = true;
-    }
+    await axios.post(`${api_url}/votes`, body, config);    
   } catch (error) {
     router.push({ name: 'error', params: { error: get(error, 'response.data') } })
   }
 }
+const favorKity = async() => {
+  let method,end,body;
+  if(favoriteId.value) {
+    method = 'delete';
+    end = `/${favoriteId.value}`;
+    const { data } = await axios.delete(`${api_url}/favourites${end}`, config);
+    if (data.message === 'SUCCESS') {
+      favoriteId.value = data.id;
+    }
+  } else {
+    method = 'post';
+    end = '';
+    body = {
+      image_id: breed.value.id,
+    };
+    const {data } = await axios[method](`${api_url}/favourites${end}`, body, config);
+    if (data.message === 'SUCCESS') {
+      favoriteId.value = data.id;
+    }
+  }; 
+};
+  
 onMounted(() =>getKity());
 const breedTitle = computed(() => {
   const title = get(breed.value, 'breeds[0].name');
@@ -70,10 +85,8 @@ const breedImg = computed(() => {
   return img ? img : null;
 })
 const handleChange = (e) => {
-  if (e !== 'fav') {
-    getKity();
-  }
-  updateKity(e);
+  getKity();
+  voteKity(e);
 }
 </script>
 
