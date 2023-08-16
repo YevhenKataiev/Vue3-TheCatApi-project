@@ -28,7 +28,11 @@ const router = createRouter({
       path: '/upload',
       name: 'Share kitty',
       component: () => import('../views/AboutView.vue')
-    }
+    },
+    {
+      path: "/error",
+      component: () => import('../views/ErrorView.vue'),
+    },
   ]
 })
 
