@@ -8,9 +8,13 @@
 import { computed } from 'vue';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { faXmark, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faHeart, faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 const props = defineProps({
   action: String,
+  isFav: {
+    type: Boolean,
+    default: false,
+  }
 });
 const emit = defineEmits(['like','dislike','fav']);
 const btnIcon = computed(() => {
@@ -18,7 +22,7 @@ const btnIcon = computed(() => {
   switch(props.action) {
     case 'like': icon = faHeart;break;
     case 'dislike': icon = faXmark;break;
-    case 'fav': icon = faStar;break;
+    case 'fav': props.isFav ? icon = solidStar : icon = faStar;break;
   }
   return icon;
 })
@@ -40,7 +44,8 @@ button {
   height: 2em;
 }
 .fa-star {
-  color: #4083f7;  
+  color: #4083f7;
+  fill:#4083f7 
 }
 .fa-xmark {
   color: #ff6666;

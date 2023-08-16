@@ -2,7 +2,7 @@
   <div class="about">
     <h1>Sorry, app has some error</h1>
     <div>
-      {{ props.error }}
+      {{ props?.error }}
     </div>
   </div>
 </template>
@@ -10,12 +10,12 @@
 const props = defineProps({error: String});
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<style scoped>
+.about {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  color: blueviolet;
 }
+
 </style>

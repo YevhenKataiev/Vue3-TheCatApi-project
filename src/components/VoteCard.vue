@@ -9,36 +9,57 @@
     </div>
     <div class="panel">
       <VoteCardBtn action="dislike" @dislike="handleChange('dislike')"/>
-      <VoteCardBtn action="fav" @fav="handleChange('fav')"/>
+      <VoteCardBtn action="fav" :isFav="isFavorite" @fav="handleChange('fav')"/>
       <VoteCardBtn action="like" @like="handleChange('like')"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import VoteCardBtn from './VoteCardBtn.vue';
+import VoteCardBtn from '../components/VoteCardBtn.vue';
 import router from '../router';
 import { onMounted, ref, computed} from 'vue';
 import axios from 'axios';
 import { get } from 'lodash';
-
+import { user_id, api_url } from '../help';
 const breed = ref({});
+const isFavorite = ref(false);
 const loading = ref(true);
-const getKity = async() => {
-  loading.value = true;
-  const config = {
-    headers: { 'x-api-key' : 'live_4A66sBHfE3ydx7n3QVnwlRVK4wQIgzzp30fRsxRLBl3aKNLgdEyUHigpRcjfprB9' }
+const config = {
+    headers: { 'x-api-key' : user_id }
   };
+const getKity = async() => {
+  loading.value = true; 
   try {
-    const { data } = await axios.get('https://api.thecatapi.com/v1/images/search', config);
+    const { data } = await axios.get(`${api_url}/images/search`, config);
     breed.value = data[0]
+    const fav = await axios.get(
+      `${api_url}/favorites?image_id=${breed.value.id}`, config);
+    isFavorite.value = !!get(fav, 'id', false);
   } catch (error) {
-    router.push({ name: 'error', params: { error: error.response.data } })
+    router.push({ name: 'error', params: { error: get(error, 'response.data') } })
   } finally {
     loading.value = false;
+  }  
+}
+const updateKity = async (prop) => {
+  let end = 'favourites';
+  const body = {
+    image_id: breed.value.id,
+  };
+  if (prop !== 'fav') {
+    body.value = prop === 'like' ? 1: -1;
+    end = 'votes';
   }
-  
-} 
+  try {
+    const { data } = await axios.post(`${api_url}/${end}`, body, config);
+    if (data.message === 'SUCCESS') {
+      isFavorite.value = true;
+    }
+  } catch (error) {
+    router.push({ name: 'error', params: { error: get(error, 'response.data') } })
+  }
+}
 onMounted(() =>getKity());
 const breedTitle = computed(() => {
   const title = get(breed.value, 'breeds[0].name');
@@ -52,6 +73,7 @@ const handleChange = (e) => {
   if (e !== 'fav') {
     getKity();
   }
+  updateKity(e);
 }
 </script>
 
