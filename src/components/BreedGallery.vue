@@ -29,21 +29,13 @@ const props = defineProps({
 const photoIndex = ref(0);
 const currentPhoto = ref({});
 const setSlide = (n) => {
-  // const k = photoIndex.value + n;
-  // if ( k > props.imgArr.length - 1 ) {
-  //   setSlide(0);
-  // } else if (k < 0) {
-  //   setSlide(props.imgArr.length - 1);
-  // } else {
-  //   setSlide(photoIndex.value + n);
-  // }
   photoIndex.value = n;
   currentPhoto.value =  props.imgArr[n];
 };
 
 onMounted(()=> setSlide(photoIndex.value));
 watchEffect(()=>{
-  setSlide(photoIndex.value);
+  photoIndex.value < props.imgArr.length ? setSlide(photoIndex.value) : setSlide(0);
 })
 const plusSlides = (n) => {
   const k = photoIndex.value + n;
