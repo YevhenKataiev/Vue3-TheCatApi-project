@@ -3,9 +3,9 @@
     <Loader v-if="loading" />
     <div v-else>
       <div class="title">
-        <SearchFilter title="breed" :list="[]"/>
+        <SearchFilter title="breed" :list="breeds"/>
         <SearchFilter title="order" :list="order"/>
-        <SearchFilter title="category" :list="[]"/>
+        <SearchFilter title="category" :list="categories"/>
       </div>
       <div class="container">
         <PhotoGallery v-if="!isEmpty(imgList)" :img-arr="imgList"/>
@@ -23,6 +23,7 @@ import { api_url, config, order } from '../help';
 const imgList = ref(['123']);
 const loading = ref(false);
 const categories = ref([]);
+const breeds = ref([]);
 const filter = ref({
   breed: '',
   order: '',
@@ -32,6 +33,10 @@ const getCategory = async() => {
   const { data } = await axios.get(`${api_url}/categories`, config);
   return data;
 };
+const getBreeds = async() => {
+  const { data } = await axios.get(`${api_url}/breeds`, config);
+  return data;
+}
 const getKity = async() => {
   loading.value = true; 
   try {
@@ -44,9 +49,10 @@ const getKity = async() => {
     loading.value = false;
   }  
 }
-onMounted(() => {
+onMounted(async() => {
   getKity();
-  categories.value = getCategory();
+  categories.value = await getCategory();
+  breeds.value = await getBreeds();
   });
 </script>
 <style scoper>

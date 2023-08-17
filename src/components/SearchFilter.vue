@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filter">
     {{ props.title }}
     <select v-model="selected">
       <option v-for="item in props.list" :value="item" :key="item.id">
@@ -19,3 +19,12 @@ const props = defineProps({
 });
 const selected = ref({});
 </script>
+<style scoped>
+.filter {
+  padding: 0 1em 0 1em;
+  min-width: 100px;
+}
+select {
+  width: 50px;
+}
+</style>
