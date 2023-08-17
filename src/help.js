@@ -5,3 +5,4 @@ export const api_url = 'https://api.thecatapi.com/v1';
 export const config = {
   headers: { 'x-api-key' : user_id }
 };
+export const order = ['random', 'asc', 'desc'];
