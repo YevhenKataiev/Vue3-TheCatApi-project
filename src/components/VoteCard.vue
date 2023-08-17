@@ -4,7 +4,7 @@
       {{ breedTitle }}
     </div>
     <div class="content">
-      <div v-if="loading" class="loader" />
+      <Loader v-if="loading" />
       <img v-else :src="breedImg" alt="Kitty">
     </div>
     <div class="panel">
@@ -17,17 +17,15 @@
 
 <script setup>
 import VoteCardBtn from '../components/VoteCardBtn.vue';
+import Loader from '@/components/Loader.vue';
 import router from '../router';
 import { onMounted, ref, computed} from 'vue';
 import axios from 'axios';
 import { get } from 'lodash';
-import { user_id, api_url } from '../help';
+import { api_url, config } from '../help';
 const breed = ref({});
 const favoriteId = ref('');
 const loading = ref(true);
-const config = {
-    headers: { 'x-api-key' : user_id }
-  };
 const getKity = async() => {
   loading.value = true; 
   try {
@@ -54,21 +52,18 @@ const voteKity = async (prop) => {
   }
 }
 const favorKity = async() => {
-  let method,end,body;
+  let end,body;
   if(favoriteId.value) {
-    method = 'delete';
     end = `/${favoriteId.value}`;
     const { data } = await axios.delete(`${api_url}/favourites${end}`, config);
     if (data.message === 'SUCCESS') {
       favoriteId.value = data.id;
     }
   } else {
-    method = 'post';
-    end = '';
     body = {
       image_id: breed.value.id,
     };
-    const {data } = await axios[method](`${api_url}/favourites${end}`, body, config);
+    const {data } = await axios.post(`${api_url}/favourites`, body, config);
     if (data.message === 'SUCCESS') {
       favoriteId.value = data.id;
     }
@@ -113,18 +108,5 @@ img {
   font-weight: 700;
   font-size: 24px;
   color: #fff;
-}
-.loader {
-  border: 16px solid #e369d554; 
-  border-top: 16px solid #ff6666;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 </style>
