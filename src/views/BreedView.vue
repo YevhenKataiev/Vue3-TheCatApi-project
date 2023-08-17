@@ -55,5 +55,15 @@ watch(selectedBreed, async (newValue) => {
 });
 </script>
 <style scoped>
-
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2em;
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
