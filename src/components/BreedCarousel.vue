@@ -58,8 +58,9 @@ const plusSlides = (n) => {
 }
 
 img {
-  max-height: 500px;
-  width: 500px;
+  object-fit: cover;
+  width: 100%;
+  height: 500px;
 }
 .prev, .next {
   cursor: pointer;
