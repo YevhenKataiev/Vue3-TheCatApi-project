@@ -70,7 +70,7 @@ const getFavor = async() => {
 onMounted(async() => {
   imgList.value = await getFavor();
 })
-const changePage = async(num) => {
+const changePage = (num) => {
   pagination.value.currentPage = num -1; // api pages starts from 0
   
 }
