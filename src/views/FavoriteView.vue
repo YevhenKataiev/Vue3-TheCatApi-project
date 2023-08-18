@@ -58,5 +58,9 @@ watchEffect(async()=>{
   justify-content: center;
   min-height: 300px;
   padding-top: 1em;
-} 
+}
+.title {
+  display: flex;
+  justify-content: center;
+}
 </style>
