@@ -11,7 +11,7 @@
         </select>
       </div>
       <div class="container">
-        <BreedGallery v-if="!isEmpty(breedImgs)" :img-arr="breedImgs"/>
+        <BreedCarousel v-if="!isEmpty(breedImgs)" :img-arr="breedImgs"/>
       </div>
     </div>   
   </main>
@@ -23,7 +23,7 @@ import axios from 'axios';
 import router from '@/router';
 import { api_url, config } from '@/help';
 import { get, isEmpty } from 'lodash';
-import BreedGallery from '@/components/BreedGallery.vue';
+import BreedCarousel from '@/components/BreedCarousel.vue';
 const breedsList = ref([]);
 const selectedBreed = ref({});
 const breedImgs = ref([]);
