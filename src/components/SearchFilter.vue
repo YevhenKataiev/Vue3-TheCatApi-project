@@ -1,6 +1,6 @@
 <template>
   <div class="filter">
-    {{ props.title }}
+    <h3>{{ props.title }}</h3>
     <select v-model="selected">
       <option v-for="item in props.list" :value="item" :key="item.id">
         {{ item.name }}
@@ -23,8 +23,13 @@ const selected = ref({});
 .filter {
   padding: 0 1em 0 1em;
   min-width: 100px;
+  font-weight: 600;
+  font-size: 18px;
 }
 select {
-  width: 50px;
+  width: 100%;
+}
+h3 {
+  text-align: center;
 }
 </style>
