@@ -28,8 +28,9 @@ defineProps({
   align-items: center;
 }
 .img {
+  object-fit: cover;
+  width: 100%;
   height: 300px;
-  width: 400px;
 }
 .fade {
   animation-name: fade;
