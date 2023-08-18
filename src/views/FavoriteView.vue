@@ -7,7 +7,23 @@
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
+      <div v-else-if="!isEmpty(imgList)">
+        <PhotoGallery  :img-arr="imgList"/>
+        <div>
+            <button
+                type="button"
+                :class="[
+                    'button--link button--large',
+                    { isActive: page === pagination.currentPage }
+                ]"
+                v-for="page in pagination.totalPages"
+                :key="page"
+                @click="changePage(page)"
+            >
+                {{ page }}
+            </button>
+        </div>
+      </div>   
       <div v-else>
         <h3> Nothing founded</h3>
       </div>
@@ -26,15 +42,24 @@ const orderList = [
   { name:'ASC', id: 'ASC'},
   { name:'DESC', id: 'DESC'}
 ];
+const pagination = ref({
+  currentPage: 0,
+  limit: 4,
+  totalPages: 1,
+});
 const loading = ref(false);
 const order = ref('ASC');
 const imgList = ref([]);
 const getFavor = async() => {
   loading.value = true;
   try {
-    const { data } = await axios.get(`${api_url}/favourites?limit=8&sub_id=${user_id}&order=${order.value}`, config);
-  return map(data, element => {
-    return { url: element.image.url }
+    const res = await axios.get(
+      `${api_url}/favourites?limit=${pagination.value.limit}&page=${pagination.value.currentPage}&sub_id=${user_id}&order=${order.value}`, config);
+    const { data, headers } = res;
+    const total = headers['pagination-count'];
+    pagination.value.totalPages = Math.ceil(total/pagination.value.limit);
+    return map(data, element => {
+      return { url: element.image.url }
   });
   } catch (error) {
     // router.push({ name: 'error', params: { error: get(error, 'response.data') } })
@@ -45,6 +70,10 @@ const getFavor = async() => {
 onMounted(async() => {
   imgList.value = await getFavor();
 })
+const changePage = async(num) => {
+  pagination.value.currentPage = num -1; // api pages starts from 0
+  
+}
 watchEffect(async()=>{
   imgList.value = await getFavor();
 })
