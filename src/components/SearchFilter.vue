@@ -19,7 +19,7 @@ defineEmits(['update:title'])
 <style scoped>
 .filter {
   padding: 0 1em 0 1em;
-  min-width: 100px;
+  min-width: 150px;
   max-width: 200px;
   font-weight: 600;
   font-size: 18px;
