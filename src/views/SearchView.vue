@@ -1,6 +1,5 @@
 <template>
-  <main class="card">
-    
+  <main class="card">  
     <div class="title-wrapper">
       <div class="title">
         <SearchFilter title="breed" :list="breeds" v-model:title="filter.breed"/>
@@ -8,13 +7,13 @@
         <SearchFilter title="category" :list="categories" v-model:title="filter.category"/>
       </div>
     </div>
-      <div  class="container">
-        <Loader v-if="loading"/>
-        <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
-        <div v-else>
-          <h3> Nothing founded</h3>
-        </div>
-      </div>  
+    <div  class="container">
+      <Loader v-if="loading"/>
+      <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
+      <div v-else>
+        <h3> Nothing founded</h3>
+      </div>
+    </div>  
   </main>
 </template>
 <script setup>

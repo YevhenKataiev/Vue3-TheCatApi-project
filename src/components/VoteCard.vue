@@ -22,7 +22,7 @@ import router from '../router';
 import { onMounted, ref, computed} from 'vue';
 import axios from 'axios';
 import { get } from 'lodash';
-import { api_url, config } from '../help';
+import { api_url, config, user_id } from '../help';
 const breed = ref({});
 const favoriteId = ref('');
 const loading = ref(true);
@@ -46,7 +46,8 @@ const voteKity = async (prop) => {
     value: prop === 'like' ? 1: -1,
   };
   try {
-    await axios.post(`${api_url}/votes`, body, config);    
+    await axios.post(`${api_url}/votes`, body, config);
+    favoriteId.value = '';    
   } catch (error) {
     router.push({ name: 'error', params: { error: get(error, 'response.data') } })
   }
@@ -62,6 +63,7 @@ const favorKity = async() => {
   } else {
     body = {
       image_id: breed.value.id,
+      sub_id: user_id,
     };
     const {data } = await axios.post(`${api_url}/favourites`, body, config);
     if (data.message === 'SUCCESS') {

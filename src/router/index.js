@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/favorites',
       name: 'Favorites',
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/FavoriteView.vue')
     },
     {
       path: '/upload',
