@@ -9,8 +9,11 @@
       </div>
     </div>
       <div  class="container">
-        <Loader v-if="loading" />
+        <Loader v-if="loading"/>
         <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
+        <div v-else>
+          <h3> Nothing founded</h3>
+        </div>
       </div>  
   </main>
 </template>
@@ -89,5 +92,6 @@ watch(filter.value, async()=>{
   align-items: center;
   justify-items: center;
   justify-content: center;
+  min-height: 300px;
 } 
 </style>
