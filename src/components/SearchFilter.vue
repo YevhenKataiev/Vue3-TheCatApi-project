@@ -1,23 +1,20 @@
 <template>
   <div class="filter">
-    <h3>{{ props.title }}</h3>
-    <select v-model="selected">
-      <option v-for="item in props.list" :value="item" :key="item.id">
+    <h3>{{ title }}</h3>
+    <select 
+      @change="$emit('update:title', $event.target.value)">
+      <option v-if="title !== 'order'" :value="''">
+        All
+      </option>
+      <option v-for="item in list" :value="item.id" :key="item.id">
         {{ item.name }}
       </option>
     </select>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-const props = defineProps({
-  list: {
-    type: Array,
-    default: () => [],
-  },
-  title: String,
-});
-const selected = ref({});
+defineProps(['title', 'list'])
+defineEmits(['update:title'])
 </script>
 <style scoped>
 .filter {

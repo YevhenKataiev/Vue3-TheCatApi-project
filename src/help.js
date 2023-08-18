@@ -6,7 +6,7 @@ export const config = {
   headers: { 'x-api-key' : user_id }
 };
 export const order = [
-  { name:'random', id: 0}, 
-  { name:'asc', id: 1},
-  { name:'desc', id: 2}
+  { name:'RANDOM', id: 'RAND'}, 
+  { name:'ASC', id: 'ASC'},
+  { name:'DESC', id: 'DESC'}
 ];

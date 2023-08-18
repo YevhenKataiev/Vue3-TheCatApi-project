@@ -1,23 +1,25 @@
 <template>
   <main class="card">
-    <Loader v-if="loading" />
-    <div v-else class="title-wrapper">
+    
+    <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="breed" :list="breeds"/>
-        <SearchFilter title="order" :list="order"/>
-        <SearchFilter title="category" :list="categories"/>
+        <SearchFilter title="breed" :list="breeds" v-model:title="filter.breed"/>
+        <SearchFilter title="order" :list="order" v-model:title="filter.order"/>
+        <SearchFilter title="category" :list="categories" v-model:title="filter.category"/>
       </div>
-      <div class="container">
-        <PhotoGallery v-if="!isEmpty(imgList)" :img-arr="imgList"/>
-      </div>
-    </div>   
+    </div>
+      <div  class="container">
+        <Loader v-if="loading" />
+        <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
+      </div>  
   </main>
 </template>
 <script setup>
+import PhotoGallery from '@/components/PhotoGallery.vue'
 import SearchFilter from '@/components/SearchFilter.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty } from 'lodash';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import axios from 'axios';
 import { api_url, config, order } from '../help';
 const imgList = ref([]);
@@ -37,27 +39,42 @@ const getBreeds = async() => {
   const { data } = await axios.get(`${api_url}/breeds`, config);
   return data;
 }
-const getKity = async() => {
-  loading.value = true; 
+const getKity = async(str= '') => {
+  loading.value = true;
   try {
-    const { data } = await axios.get(`${api_url}/images/search`, config);
-    // imgList.value = data;
+    const { data } = await axios.get(`${api_url}/images/search${str.value}`, config);
     return data;
     
   } catch (error) {
     // router.push({ name: 'error', params: { error: get(error, 'response.data') } })
   } finally {
     loading.value = false;
-  } 
-  
+  }  
 }
+const queryStr = computed(()=>{
+  let query = '?limit=6&size=small';
+  let prepFilter = '';
+  if(filter.value.breed) {
+    prepFilter += `&breed_ids=${filter.value.breed}`;
+  }
+  if(filter.value.order) {
+    prepFilter += `&order=${filter.value.order}`;
+  }
+  if(filter.value.category) {
+    prepFilter += `&category_ids=${filter.value.category}`;
+  }
+  return !isEmpty(prepFilter) ? query + prepFilter : query;
+});
 onMounted(async() => {
-  imgList.value = getKity();
+  imgList.value = await getKity(queryStr);
   categories.value = await getCategory();
   breeds.value = await getBreeds();
   });
+watch(filter.value, async()=>{
+  imgList.value = await getKity(queryStr);
+})
 </script>
-<style scoper>
+<style scoped>
 .title-wrapper {
   display: flex;
   justify-content: center;
@@ -67,4 +84,10 @@ onMounted(async() => {
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
 }
+.container {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+} 
 </style>
