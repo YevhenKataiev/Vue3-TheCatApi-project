@@ -93,5 +93,6 @@ watch(filter.value, async()=>{
   justify-items: center;
   justify-content: center;
   min-height: 300px;
+  padding-top: 1em;
 } 
 </style>

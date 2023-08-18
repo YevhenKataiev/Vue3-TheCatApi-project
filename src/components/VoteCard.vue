@@ -94,9 +94,9 @@ const handleChange = (e) => {
   
 }
 img {
+  object-fit: cover;
+  width: 100%;
   height: 500px;
-  max-width: 1024px;
-  border-radius: 1.5rem;
 }
 .panel {
   display: flex;

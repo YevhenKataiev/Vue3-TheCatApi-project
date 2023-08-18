@@ -13,6 +13,9 @@ a,
   color:hsla(314, 95%, 46%, 0.5);
   transition: 0.4s;
 }
+img {
+  border-radius: 1.5rem;
+}
 
 @media (hover: hover) {
   a:hover {
