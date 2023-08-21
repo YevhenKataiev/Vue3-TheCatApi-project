@@ -9,7 +9,7 @@
     </div>
     <div class="panel">
       <VoteCardBtn action="dislike" @dislike="handleChange('dislike')"/>
-      <VoteCardBtn action="fav" :isFav="!!favoriteId" @fav="favorKity()"/>
+      <VoteCardBtn action="fav" :isFav="!!favoriteId" @fav="handleFavor()"/>
       <VoteCardBtn action="like" @like="handleChange('like')"/>
     </div>
   </div>
@@ -18,72 +18,38 @@
 <script setup>
 import VoteCardBtn from '../components/VoteCardBtn.vue';
 import Loader from '@/components/Loader.vue';
-import router from '../router';
 import { onMounted, ref, computed} from 'vue';
-import axios from 'axios';
 import { get } from 'lodash';
-import { api_url, config, user_id } from '../help';
+import { getKity,voteKity, favorKity, loading } from '@/api';
 const breed = ref({});
 const favoriteId = ref('');
-const loading = ref(true);
-const getKity = async() => {
-  loading.value = true; 
-  try {
-    const { data } = await axios.get(`${api_url}/images/search`, config);
-    breed.value = data[0]
-    const fav = await axios.get(
-      `${api_url}/favorites?image_id=${breed.value.id}`, config);
-    favoriteId.value = get(fav, 'id','');
-  } catch (error) {
-    // router.push({ name: 'error', params: { error: get(error, 'response.data') } })
-  } finally {
-    loading.value = false;
-  }  
+const getKityImg = async() => { 
+  const data = await getKity();
+  breed.value = data[0]; 
 }
-const voteKity = async (prop) => {
-  const body = {
-    image_id: breed.value.id,
-    value: prop === 'like' ? 1: -1,
-  };
-  try {
-    await axios.post(`${api_url}/votes`, body, config);
-    favoriteId.value = '';    
-  } catch (error) {
-    router.push({ name: 'error', params: { error: get(error, 'response.data') } })
-  }
+const handleFavor = async() => {
+  favoriteId.value = await favorKity({
+    favorId: favoriteId.value,
+    id: breed.value.id
+  })
 }
-const favorKity = async() => {
-  let end,body;
-  if(favoriteId.value) {
-    end = `/${favoriteId.value}`;
-    const { data } = await axios.delete(`${api_url}/favourites${end}`, config);
-    if (data.message === 'SUCCESS') {
-      favoriteId.value = data.id;
-    }
-  } else {
-    body = {
-      image_id: breed.value.id,
-      sub_id: user_id,
-    };
-    const {data } = await axios.post(`${api_url}/favourites`, body, config);
-    if (data.message === 'SUCCESS') {
-      favoriteId.value = data.id;
-    }
-  }; 
-};
   
-onMounted(() =>getKity());
+onMounted(() => getKityImg());
+
 const breedTitle = computed(() => {
   const title = get(breed.value, 'breeds[0].name');
   return title ? title : 'Mysterious Kitty';
 })
+
 const breedImg = computed(() => {
   const img = get(breed.value, 'url');
   return img ? img : null;
 })
-const handleChange = (e) => {
-  getKity();
-  voteKity(e);
+const handleChange = (payload) => {
+  const id = breed.value.id;
+  getKityImg();
+  voteKity({payload, id});
+  favoriteId.value = '';
 }
 </script>
 
