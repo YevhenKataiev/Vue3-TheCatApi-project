@@ -9,7 +9,10 @@
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <PhotoGallery v-else-if="!isEmpty(imgList)" :img-arr="imgList"/>
+      <div v-else-if="!isEmpty(imgList)">
+        <PhotoGallery  :img-arr="imgList"/>
+        <Pagination />
+      </div>   
       <div v-else>
         <h3> Nothing founded</h3>
       </div>
@@ -19,11 +22,12 @@
 <script setup>
 import PhotoGallery from '@/components/PhotoGallery.vue'
 import SearchFilter from '@/components/SearchFilter.vue';
+import Pagination from '../components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty } from 'lodash';
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, watchEffect } from 'vue';
 import { order } from '../help';
-import { getCategory, getBreeds, getKity, loading } from '../api'
+import { getCategory, getBreeds, getKity, loading, pagination} from '../api'
 const imgList = ref([]);
 const categories = ref([]);
 const breeds = ref([]);
@@ -33,7 +37,7 @@ const filter = ref({
   category: '',
 })
 const queryStr = computed(()=>{
-  let query = '?limit=6&size=small';
+  let query = '';
   let prepFilter = '';
   if(filter.value.breed) {
     prepFilter += `&breed_ids=${filter.value.breed}`;
@@ -51,7 +55,7 @@ onMounted(async() => {
   categories.value = await getCategory();
   breeds.value = await getBreeds();
   });
-watch(filter.value, async()=>{
+watchEffect(async()=>{
   imgList.value = await getKity(queryStr);
 })
 </script>
