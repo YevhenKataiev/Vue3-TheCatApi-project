@@ -106,3 +106,19 @@ export const getFavor = async(order) => {
     loading.value = false;
   } 
 }
+export const shareKity = async(payload) => {
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+      'x-api-key' : user_id,
+    }
+  }; 
+  debugger;
+  try {
+    await axios.post(`${api_url}/images/upload`, payload, config);
+  } catch (error) {
+    console.log(error);
+  }
+  
+}
+
