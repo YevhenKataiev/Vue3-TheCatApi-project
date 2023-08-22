@@ -19,7 +19,7 @@ import { shareKity } from '@/api'
 const previewImage = ref(null);
 const fileInput = ref(null);
 const file = ref();
-function pickFile () {
+const pickFile = () => {
   let input = fileInput.value;
   file.value = input.files;
   if (file.value && file.value[0]) {
@@ -28,13 +28,13 @@ function pickFile () {
       previewImage.value = e.target.result
     }
     reader.readAsDataURL(file.value[0]);
-    
   }
 }
 const sendImg = async() => {
   const formData = new FormData();
-  formData.append("filename", file.value);
-  shareKity(formData); 
+  const fileData = file.value[0];
+  formData.append('file', fileData, fileData.name);
+  await shareKity(formData); 
 }
 </script>
 

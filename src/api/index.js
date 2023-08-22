@@ -113,7 +113,7 @@ export const shareKity = async(payload) => {
       'x-api-key' : user_id,
     }
   }; 
-  debugger;
+  payload;
   try {
     await axios.post(`${api_url}/images/upload`, payload, config);
   } catch (error) {
