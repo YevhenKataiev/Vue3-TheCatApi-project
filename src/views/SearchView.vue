@@ -22,12 +22,12 @@
 <script setup>
 import PhotoGallery from '@/components/PhotoGallery.vue'
 import SearchFilter from '@/components/SearchFilter.vue';
-import Pagination from '../components/Pagination.vue';
+import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty } from 'lodash';
-import { ref, onMounted, computed, watch, watchEffect } from 'vue';
+import { ref, onMounted, computed, watchEffect } from 'vue';
 import { order } from '../help';
-import { getCategory, getBreeds, getKity, loading, pagination} from '../api'
+import { getCategory, getBreeds, getKity, loading } from '../api'
 const imgList = ref([]);
 const categories = ref([]);
 const breeds = ref([]);
