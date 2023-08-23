@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { get, map } from 'lodash';
-import { api_url, config, user_id } from '../help';
+import { api_url, config } from '../help';
 import { ref } from 'vue';
 import router from '@/router';
+const userId = import.meta.env.VITE_userId;
 
 const newPag = {
   currentPage: 0,
@@ -79,7 +80,7 @@ export const favorKity = async(props) => {
   } else {
     body = {
       image_id: props.id,
-      sub_id: user_id,
+      sub_id: userId,
     };
     const { data } = await axios.post(`${api_url}/favourites`, body, config);
     if (data.message === 'SUCCESS') {
@@ -92,7 +93,7 @@ export const getFavor = async(order) => {
   loading.value = true;
   try {
     const res = await axios.get(
-      `${api_url}/favourites?limit=${pagination.value.limit}&page=${pagination.value.currentPage}&sub_id=${user_id}&order=${order.value}`, config);
+      `${api_url}/favourites?limit=${pagination.value.limit}&page=${pagination.value.currentPage}&sub_id=${userId}&order=${order.value}`, config);
     const { data, headers } = res;
     const total = headers['pagination-count'];
     const temp = Math.ceil(total/pagination.value.limit);
@@ -110,7 +111,7 @@ export const shareKity = async(payload) => {
   const config = {
     headers: {
       "content-type": "multipart/form-data",
-      'x-api-key' : user_id,
+      'x-api-key' : userId,
     }
   }; 
   payload;
