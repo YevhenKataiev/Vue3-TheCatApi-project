@@ -7,7 +7,7 @@
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <div v-else-if="!isEmpty(imgList)">
+      <div v-if="!isEmpty(imgList)">
         <PhotoGallery  :img-arr="imgList"/>
         <Pagination />
       </div>   
@@ -23,20 +23,31 @@ import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty } from 'lodash';
-import { ref, onMounted, watchEffect } from 'vue';
-import { loading, getFavor } from '@/api';
+import { ref, watchEffect, computed } from 'vue';
+import { loading } from '@/api';
+import { useFavoriteStore } from "../store/favorite";
+import { usePagination } from '../composable/usePagination';
+
+const store = useFavoriteStore();
+const { pagination} = usePagination()
+
 const orderList = [ 
   { name:'ASC', id: 'ASC'},
   { name:'DESC', id: 'DESC'}
 ];
 const order = ref('ASC');
-const imgList = ref([]);
 
-onMounted(async() => {
-  imgList.value = await getFavor(order.value);
-})
-watchEffect(async()=>{
-  imgList.value = await getFavor(order.value);
+const qs = computed(() => {
+  const params = new URLSearchParams(pagination.value);
+  params.append({ sub_id: import.meta.env.VITE_USER_ID});
+  params.append({ order: order.value });
+  return '?' + params.toString();
+} )
+// const qs = `?limit=${pagination.value.limit}&page=${pagination.value.currentPage}&sub_id=${import.meta.env.VITE_USER_ID}&order=${order.value}`;
+watchEffect(async()=>{ 
+  loading.value = true;
+  await store.getFavorites(qs);
+  loading.value = false;
 })
 </script>
 

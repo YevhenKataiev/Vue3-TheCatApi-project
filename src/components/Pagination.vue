@@ -15,12 +15,10 @@
   </div>
 </template>
 <script setup>
-import { pagination } from '@/api'
+import { usePagination } from '../composable/usePagination';
+const { pagination, changePage } = usePagination();
 
-const changePage = (num) => {
-  pagination.value.currentPage = num -1; // api pages starts from 0
-  
-}
+
 </script>
 
 <style scoped>
