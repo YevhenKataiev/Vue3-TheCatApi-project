@@ -3,7 +3,7 @@ import { get, map } from 'lodash';
 import { api_url, config } from '../help';
 import { ref } from 'vue';
 import router from '@/router';
-const userId = import.meta.env.VITE_userId;
+const userId = import.meta.env.VITE_USER_ID;
 
 const newPag = {
   currentPage: 0,
