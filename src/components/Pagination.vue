@@ -8,15 +8,17 @@
         ]"
         v-for="page in pagination.totalPages"
         :key="page"
-        @click="changePage(page)"
+        @click="$emit('changePage', page)"
       >
         {{ page }}
       </button>
   </div>
 </template>
 <script setup>
+const props = defineProps(['currentPagination']);
+defineEmits('changePage')
 import { usePagination } from '../composable/usePagination';
-const { pagination, changePage } = usePagination();
+const { pagination } = usePagination(props.currentPagination);
 
 
 </script>

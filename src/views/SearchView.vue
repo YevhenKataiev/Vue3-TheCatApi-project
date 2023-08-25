@@ -11,7 +11,7 @@
       <Loader v-if="loading"/>
       <div v-else-if="!isEmpty(catData)">
         <PhotoGallery  :img-arr="catData"/>
-        <Pagination />
+        <Pagination :current-pagination="pagination" @changePage="changePage"/>
       </div>   
       <div v-else>
         <h3> Nothing founded</h3>
@@ -25,7 +25,7 @@ import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty, forEach } from 'lodash';
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watchEffect, computed } from 'vue';
 import { order } from '../help';
 import { loading } from '../api'
 import { useBreedStore } from '../store/breed'
@@ -33,7 +33,7 @@ import { useCategoryStore } from '../store/category'
 import { useCatStore } from '../store/cat'
 import { storeToRefs } from 'pinia'
 import { usePagination } from '../composable/usePagination';
-const { pagination } = usePagination({
+const { pagination, changePage } = usePagination({
   limit: 4
 })
 
@@ -53,22 +53,25 @@ const filter = ref({
 })
 const queryObject = computed(() => {
   const params = new URLSearchParams()
-  const obj = { ...filter.value, ...pagination.value }
-  forEach(obj, (value, key) => {
+  // const obj = { ...filter.value, ...pagination.value }
+  forEach(filter.value, (value, key) => {
     params.append(key, value)
-  }); 
+  });
+  forEach(pagination.value, (value, key) => {
+    params.append(key, value)
+  })
   return params;
 });
 onMounted(async() => {
   loading.value = true
-  await catStore.getCatData(queryObject);
+  pagination.value.totalPages = await catStore.getCatData(queryObject);
   await categoryStore.getCategoryList();
   await breedStore.getBreedList();
   loading.value = false
   });
-watch(()=> queryObject, async()=>{
+watchEffect(async()=>{
   loading.value = true
-  await catStore.getCatData(queryObject);
+  pagination.value.totalPages = await catStore.getCatData(queryObject);
   loading.value = false
 })
 </script>

@@ -4,21 +4,22 @@ import { get } from 'lodash';
 import axios from 'axios'
 import router from '@/router'
 import { api_url, config } from '../help'
-import { usePagination } from '../composable/usePagination'
+
 
 export const useCatStore = defineStore('cat', () => {
   const catData = ref([])
-  const { pagination } = usePagination();
 
   const getCatData = async(queryObject = {}) => {
-    const searchString = new URLSearchParams(toValue(queryObject)).toString();
+    const temp  = new URLSearchParams(toValue(queryObject))
+    const limit = temp.get('limit');
+    const searchString = temp.toString();
     try {
       const res = await axios.get(`${api_url}/images/search?${searchString}`, config);
       const { data, headers } = res;
       const total = headers['pagination-count'];
-      const temp = Math.ceil(total/pagination.value.limit);
-      temp > 10 ? pagination.value.totalPages = 10 : pagination.value.totalPages = temp;
-      catData.value = data;   
+      const temp = Math.ceil(total/limit);
+      catData.value = data;
+      return temp > 10 ?  10 : temp;;
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 
