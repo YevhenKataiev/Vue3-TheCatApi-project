@@ -26,15 +26,15 @@ import { useFavoriteStore } from "../store/favorite";
 import { useCatStore } from "../store/cat";
 const favoriteStore = useFavoriteStore();
 const catStore = useCatStore();
-const { getCatData , catData, voteForCat } = storeToRefs(catStore);
+// const { getCatData, catData, voteForCat } = storeToRefs(catStore);
 const { postOrDeleteFavorite } = storeToRefs(favoriteStore);
 
 
 const breed = ref({});
 const favoriteId = ref('');
 const getKityImg = async() => { 
-  await getCatData();
-  breed.value = catData[0]; 
+  await catStore.getCatData();
+  breed.value = catStore.catData[0]; 
 }
 const handleFavor = async() => {
   favoriteId.value = await postOrDeleteFavorite({
@@ -59,7 +59,7 @@ const handleChange = async (payload) => {
   loading.value = true;
   await Promise.all([
     getKityImg(),
-    voteForCat({payload, id})]
+    catStore.voteForCat({payload, id})]
   );
   favoriteId.value = '';
   loading.value = false;

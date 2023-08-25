@@ -24,16 +24,16 @@ img {
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    /* display: flex; */
-    background-color: hsla(314, 95%, 46%, 0.2);;
-  }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 0 2rem;
-    justify-items: center;
-  }
+body {
+  /* display: flex; */
+  background-color: hsla(314, 95%, 46%, 0.2);;
 }
+
+#app {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 0 2rem;
+  justify-items: center;
+}
+
