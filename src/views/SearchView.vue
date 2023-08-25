@@ -2,7 +2,7 @@
   <main class="card">  
     <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="breed" :list="breedsList" v-model:title="filter.breed"/>
+        <SearchFilter title="breed" :list="breedsList" v-model:title="filter.breed_ids"/>
         <SearchFilter title="order" :list="order" v-model:title="filter.order"/>
         <SearchFilter title="category" :list="categoryList" v-model:title="filter.category"/>
       </div>
@@ -11,7 +11,7 @@
       <Loader v-if="loading"/>
       <div v-else-if="!isEmpty(catData)">
         <PhotoGallery  :img-arr="catData"/>
-        <Pagination :current-pagination="pagination" @changePage="changePage"/>
+        <Pagination :current-pagination="pagination" @changePage="(e) => changePage(e)"/>
       </div>   
       <div v-else>
         <h3> Nothing founded</h3>
@@ -47,19 +47,21 @@ const catStore = useCatStore()
 const { catData } = storeToRefs(catStore)
 
 const filter = ref({
-  breed: '',
+  breed_ids: '',
   order: '',
   category: '',
 })
 const queryObject = computed(() => {
   const params = new URLSearchParams()
-  // const obj = { ...filter.value, ...pagination.value }
-  forEach(filter.value, (value, key) => {
-    params.append(key, value)
+  const obj = { ...filter.value, ...pagination.value }
+  forEach(obj, (value, key) => {
+    if (value) {
+      params.append(key, value)
+    }  
   });
-  forEach(pagination.value, (value, key) => {
-    params.append(key, value)
-  })
+  // forEach(pagination.value, (value, key) => {
+  //   params.append(key, value)
+  // })
   return params;
 });
 onMounted(async() => {
