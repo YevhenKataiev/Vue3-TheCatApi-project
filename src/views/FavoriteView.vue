@@ -37,16 +37,16 @@ const orderList = [
 ];
 const order = ref('ASC');
 
-const qs = computed(() => {
+const queryObject = computed(() => {
   const params = new URLSearchParams(pagination.value);
   params.append({ sub_id: import.meta.env.VITE_USER_ID});
   params.append({ order: order.value });
-  return '?' + params.toString();
-} )
-// const qs = `?limit=${pagination.value.limit}&page=${pagination.value.currentPage}&sub_id=${import.meta.env.VITE_USER_ID}&order=${order.value}`;
+  return params;
+})
+
 watchEffect(async()=>{ 
   loading.value = true;
-  await store.getFavorites(qs);
+  await store.getFavorites(queryObject);
   loading.value = false;
 })
 </script>

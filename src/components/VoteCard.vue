@@ -20,15 +20,24 @@ import VoteCardBtn from '../components/VoteCardBtn.vue';
 import Loader from '@/components/Loader.vue';
 import { onMounted, ref, computed} from 'vue';
 import { get } from 'lodash';
-import { getKity,voteKity, favorKity, loading } from '@/api';
+import { storeToRefs } from "pinia";
+import { loading } from '@/api';
+import { useFavoriteStore } from "../store/favorite";
+import { useCatStore } from "../store/cat";
+const favoriteStore = useFavoriteStore();
+const catStore = useCatStore();
+const { getCatData , catData, voteForCat } = storeToRefs(catStore);
+const { postOrDeleteFavorite } = storeToRefs(favoriteStore);
+
+
 const breed = ref({});
 const favoriteId = ref('');
 const getKityImg = async() => { 
-  const data = await getKity();
-  breed.value = data[0]; 
+  await getCatData();
+  breed.value = catData[0]; 
 }
 const handleFavor = async() => {
-  favoriteId.value = await favorKity({
+  favoriteId.value = await postOrDeleteFavorite({
     favorId: favoriteId.value,
     id: breed.value.id
   })
@@ -45,11 +54,15 @@ const breedImg = computed(() => {
   const img = get(breed.value, 'url');
   return img ? img : null;
 })
-const handleChange = (payload) => {
+const handleChange = async (payload) => {
   const id = breed.value.id;
-  getKityImg();
-  voteKity({payload, id});
+  loading.value = true;
+  await Promise.all([
+    getKityImg(),
+    voteForCat({payload, id})]
+  );
   favoriteId.value = '';
+  loading.value = false;
 }
 </script>
 
