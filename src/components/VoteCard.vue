@@ -20,49 +20,45 @@ import VoteCardBtn from '../components/VoteCardBtn.vue';
 import Loader from '@/components/Loader.vue';
 import { onMounted, ref, computed} from 'vue';
 import { get } from 'lodash';
-import { storeToRefs } from "pinia";
 import { loading } from '@/api';
 import { useFavoriteStore } from "../store/favorite";
 import { useCatStore } from "../store/cat";
 const favoriteStore = useFavoriteStore();
 const catStore = useCatStore();
-// const { getCatData, catData, voteForCat } = storeToRefs(catStore);
-const { postOrDeleteFavorite } = storeToRefs(favoriteStore);
-
 
 const breed = ref({});
 const favoriteId = ref('');
-const getKityImg = async() => { 
-  await catStore.getCatData();
-  breed.value = catStore.catData[0]; 
+const getKityImg = async() => {
+  loading.value = true
+  await catStore.getCatData()
+  breed.value = catStore.catData[0]
+  loading.value = false
 }
 const handleFavor = async() => {
-  favoriteId.value = await postOrDeleteFavorite({
+  favoriteId.value = await favoriteStore.postOrDeleteFavorite({
     favorId: favoriteId.value,
-    id: breed.value.id
+    imgId: breed.value.id
   })
 }
   
-onMounted(() => getKityImg());
+onMounted(async() => getKityImg());
 
 const breedTitle = computed(() => {
-  const title = get(breed.value, 'breeds[0].name');
-  return title ? title : 'Mysterious Kitty';
+  const title = get(breed.value, 'breeds[0].name')
+  return title ? title : 'Mysterious Kitty'
 })
 
 const breedImg = computed(() => {
-  const img = get(breed.value, 'url');
+  const img = get(breed.value, 'url')
   return img ? img : null;
 })
 const handleChange = async (payload) => {
-  const id = breed.value.id;
-  loading.value = true;
-  await Promise.all([
-    getKityImg(),
-    catStore.voteForCat({payload, id})]
-  );
-  favoriteId.value = '';
-  loading.value = false;
+  const imgId = breed.value.id
+  loading.value = true
+  await catStore.voteForCat({payload, imgId})
+  await getKityImg()
+  favoriteId.value = ''
+  loading.value = false
 }
 </script>
 

@@ -11,9 +11,9 @@ export const useCatStore = defineStore('cat', () => {
   const { pagination } = usePagination();
 
   const getCatData = async(queryObject = {}) => {
-    const search =`?${toValue(queryObject).toString()}`
+    const searchString = new URLSearchParams(toValue(queryObject)).toString();
     try {
-      const res = await axios.get(`${api_url}/images/search${search}`, config);
+      const res = await axios.get(`${api_url}/images/search?${searchString}`, config);
       const { data, headers } = res;
       const total = headers['pagination-count'];
       const temp = Math.ceil(total/pagination.value.limit);

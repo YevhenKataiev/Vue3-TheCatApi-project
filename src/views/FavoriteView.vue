@@ -38,7 +38,8 @@ const orderList = [
 const order = ref('ASC');
 
 const queryObject = computed(() => {
-  const params = new URLSearchParams(pagination.value);
+  const params = new URLSearchParams();
+  params.append(pagination.value);
   params.append({ sub_id: import.meta.env.VITE_USER_ID});
   params.append({ order: order.value });
   return params;

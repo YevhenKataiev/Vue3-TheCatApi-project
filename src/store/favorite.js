@@ -12,9 +12,9 @@ export const useFavoriteStore = defineStore('favorite', () => {
   }
 
   const getFavorites = async(queryObject = {}) => {
-    const search = toValue(queryObject).toString();
+    const searchString = new URLSearchParams(toValue(queryObject)).toString();
     try {
-      const { data, headers } = await axios.get(`${api_url}/favourites?${search}`, config);
+      const { data, headers } = await axios.get(`${api_url}/favourites?${searchString}`, config);
       const total = headers['pagination-count'];
       const temp = Math.ceil(total/pagination.value.limit);
       temp > 10 ? pagination.value.totalPages = 10 : pagination.value.totalPages = temp;
