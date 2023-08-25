@@ -2,15 +2,15 @@
   <main class="card">  
     <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="breed" :list="breeds" v-model:title="filter.breed"/>
+        <SearchFilter title="breed" :list="breedsList" v-model:title="filter.breed"/>
         <SearchFilter title="order" :list="order" v-model:title="filter.order"/>
-        <SearchFilter title="category" :list="categories" v-model:title="filter.category"/>
+        <SearchFilter title="category" :list="categoryList" v-model:title="filter.category"/>
       </div>
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <div v-else-if="!isEmpty(imgList)">
-        <PhotoGallery  :img-arr="imgList"/>
+      <div v-else-if="!isEmpty(catData)">
+        <PhotoGallery  :img-arr="catData"/>
         <Pagination />
       </div>   
       <div v-else>
@@ -24,39 +24,52 @@ import PhotoGallery from '@/components/PhotoGallery.vue'
 import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
-import { isEmpty } from 'lodash';
-import { ref, onMounted, computed, watchEffect } from 'vue';
+import { isEmpty, forEach } from 'lodash';
+import { ref, onMounted, watch, computed } from 'vue';
 import { order } from '../help';
-import { getCategory, getBreeds, getKity, loading } from '../api'
-const imgList = ref([]);
-const categories = ref([]);
-const breeds = ref([]);
+import { loading } from '../api'
+import { useBreedStore } from '../store/breed'
+import { useCategoryStore } from '../store/category'
+import { useCatStore } from '../store/cat'
+import { storeToRefs } from 'pinia'
+import { usePagination } from '../composable/usePagination';
+const { pagination } = usePagination({
+  limit: 4
+})
+
+const categoryStore = useCategoryStore()
+const { categoryList } = storeToRefs(categoryStore)
+
+const breedStore = useBreedStore()
+const { breedsList } = storeToRefs(breedStore)
+
+const catStore = useCatStore()
+const { catData } = storeToRefs(catStore)
+
 const filter = ref({
   breed: '',
   order: '',
   category: '',
 })
-const queryStr = computed(()=>{
-  let query = '';
-  let prepFilter = '';
-  if(filter.value.breed) {
-    prepFilter += `&breed_ids=${filter.value.breed}`;
-  }
-  if(filter.value.order) {
-    prepFilter += `&order=${filter.value.order}`;
-  }
-  if(filter.value.category) {
-    prepFilter += `&category_ids=${filter.value.category}`;
-  }
-  return !isEmpty(prepFilter) ? query + prepFilter : query;
+const queryObject = computed(() => {
+  const params = new URLSearchParams()
+  const obj = { ...filter.value, ...pagination.value }
+  forEach(obj, (value, key) => {
+    params.append(key, value)
+  }); 
+  return params;
 });
 onMounted(async() => {
-  imgList.value = await getKity(queryStr);
-  categories.value = await getCategory();
-  breeds.value = await getBreeds();
+  loading.value = true
+  await catStore.getCatData(queryObject);
+  await categoryStore.getCategoryList();
+  await breedStore.getBreedList();
+  loading.value = false
   });
-watchEffect(async()=>{
-  imgList.value = await getKity(queryStr);
+watch(()=> queryObject, async()=>{
+  loading.value = true
+  await catStore.getCatData(queryObject);
+  loading.value = false
 })
 </script>
 <style scoped>

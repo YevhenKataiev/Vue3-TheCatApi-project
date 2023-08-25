@@ -7,7 +7,7 @@ import { api_url, config } from '../help'
 import { usePagination } from '../composable/usePagination'
 
 export const useCatStore = defineStore('cat', () => {
-  const catData = ref({})
+  const catData = ref([])
   const { pagination } = usePagination();
 
   const getCatData = async(queryObject = {}) => {

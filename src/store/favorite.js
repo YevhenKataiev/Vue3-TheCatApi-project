@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, toValue } from 'vue'
 import axios from 'axios'
+import router from '@/router'
+import { get } from 'lodash'
 import { api_url, config } from '../help'
 import { usePagination } from '../composable/usePagination'
 
@@ -22,7 +24,7 @@ export const useFavoriteStore = defineStore('favorite', () => {
         return { url: element.image.url }
     }) ;
     } catch (error) {
-      // router.push({ name: 'error', params: { error: get(error, 'response.data') } })
+      router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 
   }
   const postOrDeleteFavorite = async({ favorId, imgId }) => {
