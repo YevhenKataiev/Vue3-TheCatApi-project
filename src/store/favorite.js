@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, toValue } from 'vue'
 import axios from 'axios'
 import router from '@/router'
 import { get, forEach } from 'lodash'
@@ -14,20 +14,22 @@ export const useFavoriteStore = defineStore('favorite', () => {
   const getFavorites = async(queryObject) => {
     const params = new URLSearchParams()
     forEach(queryObject.value, (value, key) => {
-      if (value) {
+      if (value || value === 0) {
         params.append(key, value)
       }  
     });
     const limit = params.get('limit');
+    const page = params.get('page') || 0;
     const searchString = params.toString();
     try {
       const { data, headers } = await axios.get(`${api_url}/favourites?${searchString}`, config);
-      const total = headers['pagination-count'];
-      const temp = Math.ceil(total/limit);
       favorites.value = data.map(element => {
         return { url: element.image.url }
       }) ;
-      return temp > 10 ?  10 : temp;;
+      const total = headers['pagination-count'];
+      const pageCount = Math.ceil(total/limit);
+      const currentPagination = {limit: +limit, page: +page}
+      return { currentPagination, currentTotalPages: pageCount > 10 ?  10 : pageCount};
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 

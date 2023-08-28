@@ -14,7 +14,11 @@
       <Loader v-if="loading"/>
       <div v-else-if="!isEmpty(catData)">
         <PhotoGallery  :img-arr="catData"/>
-        <Pagination :current-page="pagination.page" :total-pages="totalPages" @changePage="(e) => changePage(e)"/>
+        <Pagination
+          :current-page="pagination.page"
+          :total-pages="totalPages"
+          @changePage="(e) => changePage(e)"
+        />
       </div>   
       <div v-else>
         <h3> Nothing founded</h3>

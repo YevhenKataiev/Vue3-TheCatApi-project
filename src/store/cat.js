@@ -9,10 +9,10 @@ import { api_url, config } from '../help'
 export const useCatStore = defineStore('cat', () => {
   const catData = ref([])
 
-  const getCatData = async(object) => {
+  const getCatData = async(props) => {
     const params = new URLSearchParams()
-    const filter = toValue(get(object, 'filter'))
-    const pagination = toValue(get(object,'pagination'))
+    const filter = toValue(get(props, 'filter'))
+    const pagination = toValue(get(props,'pagination'))
     if(filter){
       forEach(filter, (value, key) => {
       if (value || value === 0) {
