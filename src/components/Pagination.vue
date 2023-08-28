@@ -4,9 +4,9 @@
         type="button"
         :class="[
             'pagination-btn',
-            { 'active': page === pagination.currentPage + 1 }
+            { 'active': page === currentPagination.page + 1 }
         ]"
-        v-for="page in pagination.totalPages"
+        v-for="page in currentPagination.totalPages"
         :key="page"
         @click="$emit('changePage', page)"
       >
@@ -15,12 +15,8 @@
   </div>
 </template>
 <script setup>
-const props = defineProps(['currentPagination']);
-defineEmits('changePage')
-import { usePagination } from '../composable/usePagination';
-const { pagination } = usePagination(props.currentPagination);
-
-
+defineProps(['currentPagination']);
+defineEmits(['changePage'])
 </script>
 
 <style scoped>
