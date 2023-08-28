@@ -40,7 +40,7 @@ import { useCategoryStore } from '../store/category'
 import { useCatStore } from '../store/cat'
 import { storeToRefs } from 'pinia'
 import { usePagination } from '../composable/usePagination';
-const { pagination, changePage, totalPages } = usePagination({ limit: 4});
+const { pagination, changePage, totalPages, total } = usePagination({ limit: 4});
 
 const categoryStore = useCategoryStore()
 const { categoryList } = storeToRefs(categoryStore)
@@ -58,8 +58,8 @@ const filter = ref({
 })
 const updateSearch = async()=>{
   loading.value = true
-  const { currentPagination, currentTotalPages } = await catStore.getCatData({filter, pagination});
-  totalPages.value = currentTotalPages;
+  const { currentPagination, paginationСount } = await catStore.getCatData({filter, pagination});
+  total.value = paginationСount;
   pagination.value = currentPagination;
   loading.value = false
 }

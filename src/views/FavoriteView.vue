@@ -33,7 +33,7 @@ import { useFavoriteStore } from "../store/favorite";
 import { usePagination } from '../composable/usePagination';
 
 const store = useFavoriteStore();
-const { pagination, changePage, totalPages } = usePagination({ limit: 4});
+const { pagination, changePage, totalPages, total } = usePagination({ limit: 4});
 
 const orderList = [ 
   { name:'ASC', id: 'ASC'},
@@ -51,8 +51,8 @@ const queryObject = computed(() => {
 });
 const updateSearch = async() => {
   loading.value = true
-  const { currentPagination, currentTotalPages } = await store.getFavorites(queryObject)
-  totalPages.value = currentTotalPages
+  const { currentPagination, paginationСount } = await store.getFavorites(queryObject)
+  total.value = paginationСount
   pagination.value = currentPagination
   loading.value = false
 }

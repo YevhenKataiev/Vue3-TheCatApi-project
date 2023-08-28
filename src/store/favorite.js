@@ -26,10 +26,9 @@ export const useFavoriteStore = defineStore('favorite', () => {
       favorites.value = data.map(element => {
         return { url: element.image.url }
       }) ;
-      const total = headers['pagination-count'];
-      const pageCount = Math.ceil(total/limit);
+      const paginationСount = headers['pagination-count'];
       const currentPagination = {limit: +limit, page: +page}
-      return { currentPagination, currentTotalPages: pageCount > 10 ?  10 : pageCount};
+      return { currentPagination, paginationСount };
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 

@@ -27,16 +27,13 @@ export const useCatStore = defineStore('cat', () => {
       }  
     });
     }    
-    const limit = params.get('limit');
     const searchString = params.toString();
     try {
       const res = await axios.get(`${api_url}/images/search?${searchString}`, config);
       const { data, headers } = res;
       catData.value = data;
-      const total = headers['pagination-count'];
-      const pageCount = Math.ceil(total/limit);
-      const currentPagination = toValue(pagination)
-      return { currentPagination, currentTotalPages: pageCount > 10 ?  10 : pageCount};
+      const paginationСount = headers['pagination-count'];
+      return { currentPagination: pagination, paginationСount };
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 
