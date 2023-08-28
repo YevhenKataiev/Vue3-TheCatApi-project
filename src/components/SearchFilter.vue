@@ -2,7 +2,7 @@
   <div class="filter">
     <h3>{{ title }}</h3>
     <select 
-      @change="$emit('update:title', $event.target.value)">
+      @change="$emit('update:selected', $event.target.value)">
       <option v-if="title !== 'order'" :value="''">
         All
       </option>
@@ -13,8 +13,8 @@
   </div>
 </template>
 <script setup>
-defineProps(['title', 'list'])
-defineEmits(['update:title'])
+defineProps(['title', 'list', 'selected'])
+defineEmits(['update:selected'])
 </script>
 <style scoped>
 .filter {
