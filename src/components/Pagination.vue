@@ -4,9 +4,9 @@
         type="button"
         :class="[
             'pagination-btn',
-            { 'active': page === currentPagination.page + 1 }
+            { 'active': page === currentPage + 1 }
         ]"
-        v-for="page in currentPagination.totalPages"
+        v-for="page in totalPages"
         :key="page"
         @click="$emit('changePage', page)"
       >
@@ -15,7 +15,7 @@
   </div>
 </template>
 <script setup>
-defineProps(['currentPagination']);
+defineProps(['currentPage', 'totalPages']);
 defineEmits(['changePage'])
 </script>
 

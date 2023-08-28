@@ -14,7 +14,7 @@
       <Loader v-if="loading"/>
       <div v-else-if="!isEmpty(catData)">
         <PhotoGallery  :img-arr="catData"/>
-        <Pagination :current-pagination="pagination" @changePage="(e) => changePage(e)"/>
+        <Pagination :current-page="pagination.page" :total-pages="totalPages" @changePage="(e) => changePage(e)"/>
       </div>   
       <div v-else>
         <h3> Nothing founded</h3>
@@ -36,9 +36,7 @@ import { useCategoryStore } from '../store/category'
 import { useCatStore } from '../store/cat'
 import { storeToRefs } from 'pinia'
 import { usePagination } from '../composable/usePagination';
-const { pagination, changePage, currentPage } = usePagination({
-  limit: 4
-})
+const { pagination, changePage, totalPages } = usePagination({ limit: 4});
 
 const categoryStore = useCategoryStore()
 const { categoryList } = storeToRefs(categoryStore)
@@ -54,20 +52,24 @@ const filter = ref({
   order: '',
   category_ids: '',
 })
+const updateSearch = async()=>{
+  loading.value = true
+  const { currentPagination, currentTotalPages } = await catStore.getCatData({filter, pagination});
+  totalPages.value = currentTotalPages;
+  pagination.value = currentPagination;
+  loading.value = false
+}
 onMounted(async() => {
   loading.value = true
   await categoryStore.getCategoryList();
   await breedStore.getBreedList();
   loading.value = false
   });
-watch(() =>[filter, currentPage], async(newVal, oldVal)=>{
-  console.log(newVal)
-  console.log(oldVal)
-  loading.value = true
-  pagination.value = await catStore.getCatData({filter, pagination});
-  debugger
-  loading.value = false
-}, { deep: true, immediate: true })
+watch(() => pagination.value.page,() => updateSearch(), { immediate: true })
+watch(() => filter,() => {
+  pagination.value.page = 0;
+  updateSearch();
+}, { deep: true })
 </script>
 <style scoped>
 .title-wrapper {

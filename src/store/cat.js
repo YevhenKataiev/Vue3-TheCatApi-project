@@ -35,12 +35,8 @@ export const useCatStore = defineStore('cat', () => {
       catData.value = data;
       const total = headers['pagination-count'];
       const pageCount = Math.ceil(total/limit);
-      const currentPagination = {
-        ...pagination,
-        totalPages: pageCount > 10 ?  10 : pageCount,
-      }
-      debugger
-      return currentPagination;
+      const currentPagination = toValue(pagination)
+      return { currentPagination, currentTotalPages: pageCount > 10 ?  10 : pageCount};
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 
