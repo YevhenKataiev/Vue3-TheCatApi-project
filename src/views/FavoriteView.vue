@@ -2,7 +2,7 @@
   <main class="card">  
     <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="order" :list="orderList" v-model:title="order"/>
+        <SearchFilter title="order" :list="orderList" v-model:selected="order"/>
       </div>
     </div>
     <div  class="container">
@@ -52,7 +52,7 @@ const queryObject = computed(() => {
 
 watch(() => queryObject,async()=>{ 
   loading.value = true;
-  await store.getFavorites(queryObject);
+  pagination.value.totalPages = await store.getFavorites(queryObject);
   loading.value = false;
 }, {immediate: true})
 </script>

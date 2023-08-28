@@ -7,11 +7,12 @@ export const usePagination = (props) => {
     limit: get(props, 'limit', 1),
     totalPages: get(props, 'totalPages', 1),
   });
+  // const totalPages = get(props, 'totalPages', 1),
   const changePage = (num) => {
-    pagination.value.page = num - 1; // api pages starts from 0
-    
+    pagination.value.page = num - 1; // api pages starts from 0  
   }
+  debugger
   return {
-    pagination, changePage
+    pagination, changePage, currentPage:pagination.value.page 
   }
 }

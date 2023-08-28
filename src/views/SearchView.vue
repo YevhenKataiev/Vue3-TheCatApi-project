@@ -2,9 +2,12 @@
   <main class="card">  
     <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="breed" :list="breedsList" v-model:title="filter.breed_ids"/>
-        <SearchFilter title="order" :list="order" v-model:title="filter.order"/>
-        <SearchFilter title="category" :list="categoryList" v-model:title="filter.category"/>
+        <SearchFilter
+          title="breed"
+          :list="breedsList"
+          v-model:selected="filter.breed_ids"/>
+        <SearchFilter title="order" :list="order" v-model:selected="filter.order"/>
+        <SearchFilter title="category" :list="categoryList" v-model:selected="filter.category_ids"/>
       </div>
     </div>
     <div  class="container">
@@ -25,7 +28,7 @@ import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty, forEach } from 'lodash';
-import { ref, onMounted, watchEffect, computed } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { order } from '../help';
 import { loading } from '../api'
 import { useBreedStore } from '../store/breed'
@@ -33,7 +36,7 @@ import { useCategoryStore } from '../store/category'
 import { useCatStore } from '../store/cat'
 import { storeToRefs } from 'pinia'
 import { usePagination } from '../composable/usePagination';
-const { pagination, changePage } = usePagination({
+const { pagination, changePage, currentPage } = usePagination({
   limit: 4
 })
 
@@ -49,33 +52,22 @@ const { catData } = storeToRefs(catStore)
 const filter = ref({
   breed_ids: '',
   order: '',
-  category: '',
+  category_ids: '',
 })
-const queryObject = computed(() => {
-  const params = new URLSearchParams()
-  const obj = { ...filter.value, ...pagination.value }
-  forEach(obj, (value, key) => {
-    if (value) {
-      params.append(key, value)
-    }  
-  });
-  // forEach(pagination.value, (value, key) => {
-  //   params.append(key, value)
-  // })
-  return params;
-});
 onMounted(async() => {
   loading.value = true
-  pagination.value.totalPages = await catStore.getCatData(queryObject);
   await categoryStore.getCategoryList();
   await breedStore.getBreedList();
   loading.value = false
   });
-watchEffect(async()=>{
+watch(() =>[filter, currentPage], async(newVal, oldVal)=>{
+  console.log(newVal)
+  console.log(oldVal)
   loading.value = true
-  pagination.value.totalPages = await catStore.getCatData(queryObject);
+  pagination.value = await catStore.getCatData({filter, pagination});
+  debugger
   loading.value = false
-})
+}, { deep: true, immediate: true })
 </script>
 <style scoped>
 .title-wrapper {

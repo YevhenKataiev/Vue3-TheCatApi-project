@@ -1,28 +1,33 @@
 import { defineStore } from 'pinia'
-import { ref, toValue } from 'vue'
+import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
-import { get } from 'lodash'
+import { get, forEach } from 'lodash'
 import { api_url, config } from '../help'
-import { usePagination } from '../composable/usePagination'
 
 export const useFavoriteStore = defineStore('favorite', () => {
   const favorites = ref({});
-  const { pagination } = usePagination();
   const $reset = () => {
     favorites.value = {}
   }
 
-  const getFavorites = async(queryObject = {}) => {
-    const searchString = new URLSearchParams(toValue(queryObject)).toString();
+  const getFavorites = async(queryObject) => {
+    const params = new URLSearchParams()
+    forEach(queryObject.value, (value, key) => {
+      if (value) {
+        params.append(key, value)
+      }  
+    });
+    const limit = params.get('limit');
+    const searchString = params.toString();
     try {
       const { data, headers } = await axios.get(`${api_url}/favourites?${searchString}`, config);
       const total = headers['pagination-count'];
-      const temp = Math.ceil(total/pagination.value.limit);
-      temp > 10 ? pagination.value.totalPages = 10 : pagination.value.totalPages = temp;
+      const temp = Math.ceil(total/limit);
       favorites.value = data.map(element => {
         return { url: element.image.url }
-    }) ;
+      }) ;
+      return temp > 10 ?  10 : temp;;
     } catch (error) {
       router.push({ name: 'error', params: { error: get(error, 'response.data') } })
     } 
