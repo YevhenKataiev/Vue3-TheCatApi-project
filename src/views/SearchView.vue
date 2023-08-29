@@ -31,8 +31,8 @@ import PhotoGallery from '@/components/PhotoGallery.vue'
 import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
-import { isEmpty, forEach } from 'lodash';
-import { ref, onMounted, watch, computed } from 'vue';
+import { isEmpty } from 'lodash';
+import { ref, onMounted, watch } from 'vue';
 import { order } from '../help';
 import { loading } from '../api'
 import { useBreedStore } from '../store/breed'

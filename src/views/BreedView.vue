@@ -3,7 +3,7 @@
     <Loader v-if="loading" />
     <div v-else>
       <div class="title">
-        Breeds:
+        BREEDS:
         <select v-model="selectedBreed">
           <option v-for="item in breedsList" :value="item" :key="item.id">
             {{ item.name }}

@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="content-wrapper">
     <div class="title">
       {{ breedTitle }}
     </div>
     <div class="content">
       <Loader v-if="loading" />
-      <img v-else :src="breedImg" alt="Kitty">
+      <div v-if="breedImg"  class="img-wrapper">
+        <img :src="breedImg" alt="Kitty" />
+      </div>
     </div>
     <div class="panel">
       <VoteCardBtn action="dislike" @dislike="handleChange('dislike')"/>
@@ -63,6 +65,9 @@ const handleChange = async (payload) => {
 </script>
 
 <style scoped>
+.content-wrapper {
+  min-width: 400px;
+}
 .content {
   display: flex;
   align-items: center;
@@ -70,10 +75,19 @@ const handleChange = async (payload) => {
   min-height: 500px;
   
 }
-img {
-  object-fit: cover;
+.img-wrapper {
+  display: block;
+  max-width: 500px;
   width: 100%;
-  height: 500px;
+}
+img {
+  display: block;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  
 }
 .panel {
   display: flex;
@@ -84,6 +98,6 @@ img {
   text-align: center;
   font-weight: 700;
   font-size: 24px;
-  color: #fff;
+  color: #E48586;
 }
 </style>

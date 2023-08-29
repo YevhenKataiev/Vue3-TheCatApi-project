@@ -1,6 +1,6 @@
 <template>
   <div class="filter">
-    <h3>{{ title }}</h3>
+    <h4>{{ title.toUpperCase() }}</h4>
     <select 
       @change="$emit('update:selected', $event.target.value)">
       <option v-if="title !== 'order'" :value="''">
@@ -27,7 +27,7 @@ defineEmits(['update:selected'])
 select {
   width: 100%;
 }
-h3 {
+h4 {
   text-align: center;
 }
 </style>

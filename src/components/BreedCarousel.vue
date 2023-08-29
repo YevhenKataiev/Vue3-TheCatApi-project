@@ -1,9 +1,13 @@
 <template>
   <section>
     <div class="slideshow-container">
-      <a class="prev" @click="plusSlides(-1)">&#10094;</a>
-      <img v-if="currentPhoto" :src="currentPhoto.url" class="fade" alt="Kitty"/>   
-      <a class="next" @click="plusSlides(1)">&#10095;</a>
+      <div class="slide-wrapper">
+        <button class="prev" @click="plusSlides(-1)">&#10094;</button>
+        <div class="img-wrapper">
+          <img v-if="currentPhoto" :src="currentPhoto.url" class="fade" alt="Kitty"/>
+        </div>   
+        <button class="next" @click="plusSlides(1)">&#10095;</button>
+      </div>    
     </div>
     <br>
     <div style="text-align:center">
@@ -69,21 +73,21 @@ img {
   width: auto;
   margin-top: -22px;
   padding: 16px;
-  color: white;
+  color: #916DB3;
   font-weight: bold;
   font-size: 18px;
   transition: 0.6s ease;
-  border-radius: 0 3px 3px 0;
+  border: none;
   user-select: none;
+  background-color: #e9d2ff00;
 }
 
 .next {
   right: 0;
-  border-radius: 3px 0 0 3px;
 }
 
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: #FDE5EC;
 }
 
 .dot {
@@ -91,14 +95,14 @@ img {
   height: 15px;
   width: 15px;
   margin: 0 2px;
-  background-color: #ff797969;
+  background-color: #FCBAAD;
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
 }
 
 .active, .dot:hover {
-  background-color: #ff6666;
+  background-color: #E48586;
 }
 
 /* Fading animation */

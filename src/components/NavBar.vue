@@ -26,11 +26,13 @@ nav {
 
 nav a.router-link-exact-active {
   color: #fff;
+  border-radius: 12px;
+  background-color: #FCBAAD;
 }
 
-nav a.router-link-exact-active:hover {
+/* nav a.router-link-exact-active:hover {
   background-color: transparent;
-}
+} */
 
 nav a {
   display: inline-block;
