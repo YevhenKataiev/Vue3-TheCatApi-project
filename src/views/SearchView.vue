@@ -2,19 +2,26 @@
   <main class="card">  
     <div class="title-wrapper">
       <div class="title">
-        <SearchFilter title="breed" :list="breeds" v-model:title="filter.breed"/>
-        <SearchFilter title="order" :list="order" v-model:title="filter.order"/>
-        <SearchFilter title="category" :list="categories" v-model:title="filter.category"/>
+        <SearchFilter
+          title="breed"
+          :list="breedsList"
+          v-model:selected="filter.breed_ids"/>
+        <SearchFilter title="order" :list="order" v-model:selected="filter.order"/>
+        <SearchFilter title="category" :list="categoryList" v-model:selected="filter.category_ids"/>
       </div>
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <div v-else-if="!isEmpty(imgList)">
-        <PhotoGallery  :img-arr="imgList"/>
-        <Pagination />
+      <div v-if="!isEmpty(catData)">
+        <PhotoGallery  :img-arr="catData"/>
+        <Pagination
+          :current-page="pagination.page"
+          :total-pages="totalPages"
+          @changePage="(e) => changePage(e)"
+        />
       </div>   
       <div v-else>
-        <h3> Nothing founded</h3>
+        <h3> Nothing founded yet</h3>
       </div>
     </div>  
   </main>
@@ -25,39 +32,48 @@ import SearchFilter from '@/components/SearchFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { isEmpty } from 'lodash';
-import { ref, onMounted, computed, watchEffect } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { order } from '../help';
-import { getCategory, getBreeds, getKity, loading } from '../api'
-const imgList = ref([]);
-const categories = ref([]);
-const breeds = ref([]);
+import { loading } from '../api'
+import { useBreedStore } from '../store/breed'
+import { useCategoryStore } from '../store/category'
+import { useCatStore } from '../store/cat'
+import { storeToRefs } from 'pinia'
+import { usePagination } from '../composable/usePagination';
+const { pagination, changePage, totalPages, total } = usePagination({ limit: 4});
+
+const categoryStore = useCategoryStore()
+const { categoryList } = storeToRefs(categoryStore)
+
+const breedStore = useBreedStore()
+const { breedsList } = storeToRefs(breedStore)
+
+const catStore = useCatStore()
+const { catData } = storeToRefs(catStore)
+
 const filter = ref({
-  breed: '',
+  breed_ids: '',
   order: '',
-  category: '',
+  category_ids: '',
 })
-const queryStr = computed(()=>{
-  let query = '';
-  let prepFilter = '';
-  if(filter.value.breed) {
-    prepFilter += `&breed_ids=${filter.value.breed}`;
-  }
-  if(filter.value.order) {
-    prepFilter += `&order=${filter.value.order}`;
-  }
-  if(filter.value.category) {
-    prepFilter += `&category_ids=${filter.value.category}`;
-  }
-  return !isEmpty(prepFilter) ? query + prepFilter : query;
-});
+const updateSearch = async()=>{
+  loading.value = true
+  const { currentPagination, paginationСount } = await catStore.getCatData({filter, pagination});
+  total.value = paginationСount;
+  pagination.value = currentPagination;
+  loading.value = false
+}
 onMounted(async() => {
-  imgList.value = await getKity(queryStr);
-  categories.value = await getCategory();
-  breeds.value = await getBreeds();
+  loading.value = true
+  await categoryStore.getCategoryList();
+  await breedStore.getBreedList();
+  loading.value = false
   });
-watchEffect(async()=>{
-  imgList.value = await getKity(queryStr);
-})
+watch(() => pagination.value.page,() => updateSearch(), { immediate: true })
+watch(() => filter,() => {
+  pagination.value.page = 0;
+  updateSearch();
+}, { deep: true })
 </script>
 <style scoped>
 .title-wrapper {

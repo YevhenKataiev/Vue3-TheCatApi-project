@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="content-wrapper">
     <div class="title">
       {{ breedTitle }}
     </div>
     <div class="content">
       <Loader v-if="loading" />
-      <img v-else :src="breedImg" alt="Kitty">
+      <div v-if="breedImg"  class="img-wrapper">
+        <img :src="breedImg" alt="Kitty" />
+      </div>
     </div>
     <div class="panel">
       <VoteCardBtn action="dislike" @dislike="handleChange('dislike')"/>
@@ -20,40 +22,52 @@ import VoteCardBtn from '../components/VoteCardBtn.vue';
 import Loader from '@/components/Loader.vue';
 import { onMounted, ref, computed} from 'vue';
 import { get } from 'lodash';
-import { getKity,voteKity, favorKity, loading } from '@/api';
+import { loading } from '@/api';
+import { useFavoriteStore } from "../store/favorite";
+import { useCatStore } from "../store/cat";
+const favoriteStore = useFavoriteStore();
+const catStore = useCatStore();
+
 const breed = ref({});
 const favoriteId = ref('');
-const getKityImg = async() => { 
-  const data = await getKity();
-  breed.value = data[0]; 
+const getKityImg = async() => {
+  loading.value = true
+  await catStore.getCatData()
+  breed.value = catStore.catData[0]
+  loading.value = false
 }
 const handleFavor = async() => {
-  favoriteId.value = await favorKity({
+  favoriteId.value = await favoriteStore.postOrDeleteFavorite({
     favorId: favoriteId.value,
-    id: breed.value.id
+    imgId: breed.value.id
   })
 }
   
-onMounted(() => getKityImg());
+onMounted(async() => getKityImg());
 
 const breedTitle = computed(() => {
-  const title = get(breed.value, 'breeds[0].name');
-  return title ? title : 'Mysterious Kitty';
+  const title = get(breed.value, 'breeds[0].name')
+  return title ? title : 'Mysterious Kitty'
 })
 
 const breedImg = computed(() => {
-  const img = get(breed.value, 'url');
+  const img = get(breed.value, 'url')
   return img ? img : null;
 })
-const handleChange = (payload) => {
-  const id = breed.value.id;
-  getKityImg();
-  voteKity({payload, id});
-  favoriteId.value = '';
+const handleChange = async (payload) => {
+  const imgId = breed.value.id
+  loading.value = true
+  await catStore.voteForCat({payload, imgId})
+  await getKityImg()
+  favoriteId.value = ''
+  loading.value = false
 }
 </script>
 
 <style scoped>
+.content-wrapper {
+  min-width: 400px;
+}
 .content {
   display: flex;
   align-items: center;
@@ -61,10 +75,19 @@ const handleChange = (payload) => {
   min-height: 500px;
   
 }
-img {
-  object-fit: cover;
+.img-wrapper {
+  display: block;
+  max-width: 500px;
   width: 100%;
-  height: 500px;
+}
+img {
+  display: block;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  
 }
 .panel {
   display: flex;
@@ -75,6 +98,6 @@ img {
   text-align: center;
   font-weight: 700;
   font-size: 24px;
-  color: #fff;
+  color: #E48586;
 }
 </style>

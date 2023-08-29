@@ -1,8 +1,8 @@
 <template>
   <div class="filter">
-    <h3>{{ title }}</h3>
+    <h4>{{ title.toUpperCase() }}</h4>
     <select 
-      @change="$emit('update:title', $event.target.value)">
+      @change="$emit('update:selected', $event.target.value)">
       <option v-if="title !== 'order'" :value="''">
         All
       </option>
@@ -13,8 +13,8 @@
   </div>
 </template>
 <script setup>
-defineProps(['title', 'list'])
-defineEmits(['update:title'])
+defineProps(['title', 'list', 'selected'])
+defineEmits(['update:selected'])
 </script>
 <style scoped>
 .filter {
@@ -27,7 +27,7 @@ defineEmits(['update:title'])
 select {
   width: 100%;
 }
-h3 {
+h4 {
   text-align: center;
 }
 </style>

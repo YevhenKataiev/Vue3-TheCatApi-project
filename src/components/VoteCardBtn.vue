@@ -1,7 +1,9 @@
 <template>
-  <button @click="emit(props.action)">
-    <font-awesome-icon :icon="btnIcon" />
-  </button>
+  <div class="btn-wrapper">
+    <button @click="emit(props.action)">
+      <font-awesome-icon :icon="btnIcon" />
+    </button>
+  </div>
 </template>
 
 <script setup>
@@ -39,6 +41,10 @@ button {
   box-shadow: 0 2px 4px rgb(219, 186, 212);
   cursor: pointer;
   transition: all 0.2s ease;
+}
+.btn-wrapper {
+  padding-left: 2em;
+  padding-right: 2em;
 }
 .svg-inline--fa {
   height: 2em;

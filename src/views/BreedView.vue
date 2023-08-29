@@ -3,7 +3,7 @@
     <Loader v-if="loading" />
     <div v-else>
       <div class="title">
-        Breeds:
+        BREEDS:
         <select v-model="selectedBreed">
           <option v-for="item in breedsList" :value="item" :key="item.id">
             {{ item.name }}
@@ -11,7 +11,7 @@
         </select>
       </div>
       <div class="container">
-        <BreedCarousel v-if="!isEmpty(breedImgs)" :img-arr="breedImgs"/>
+        <BreedCarousel v-if="!isEmpty(breedsImgsList)" :img-arr="breedsImgsList"/>
       </div>
     </div>   
   </main>
@@ -21,17 +21,24 @@ import Loader from '@/components/Loader.vue'
 import { onMounted, ref, watch } from 'vue';
 import { isEmpty } from 'lodash';
 import BreedCarousel from '@/components/BreedCarousel.vue';
-import{ getBreeds, getBreedsImages, loading } from '@/api';
-const breedsList = ref([]);
+import{ loading } from '@/api';
+import { useBreedStore } from "../store/breed";
+import { storeToRefs } from 'pinia'
+
+const breedStore = useBreedStore();
+const { breedsList, breedsImgsList } = storeToRefs(breedStore);
 const selectedBreed = ref({});
-const breedImgs = ref([]);
 
 onMounted(async () => {
-  breedsList.value = await getBreeds();
-  selectedBreed.value = breedsList.value[0];
+  loading.value = true
+  await breedStore.getBreedList()
+  selectedBreed.value = breedsList.value[0]
+  loading.value = false
 });
 watch(selectedBreed, async (newValue) => {
-  breedImgs.value = await getBreedsImages(newValue.id);
+  loading.value = true
+  await breedStore.getBreedImgList(newValue.id);
+  loading.value = false
 });
 </script>
 <style scoped>

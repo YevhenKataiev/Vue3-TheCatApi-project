@@ -5,35 +5,35 @@
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 0 2rem;
+  justify-items: center;
 }
 
 a,
 .green {
   text-decoration: none;
-  color:hsla(314, 95%, 46%, 0.5);
+  /* color:#FCBAAD; */
   transition: 0.4s;
 }
 img {
   border-radius: 1.5rem;
 }
+select {
+  border: none;
+  border-radius: 5px;
+  background-color: #FCBAAD;
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #916DB3;
+}
 
 @media (hover: hover) {
   a:hover {
-    background-color:rgba(255, 0, 153, 0.34);
+    background-color:#FCBAAD;
     border-radius: 12px;
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    /* display: flex; */
-    background-color: hsla(314, 95%, 46%, 0.2);;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 0 2rem;
-    justify-items: center;
+    transition: 0.4s;
+    text-decoration: none;
   }
 }

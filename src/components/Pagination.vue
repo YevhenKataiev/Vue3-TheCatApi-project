@@ -4,23 +4,19 @@
         type="button"
         :class="[
             'pagination-btn',
-            { 'active': page === pagination.currentPage + 1 }
+            { 'active': page === currentPage + 1 }
         ]"
-        v-for="page in pagination.totalPages"
+        v-for="page in totalPages"
         :key="page"
-        @click="changePage(page)"
+        @click="$emit('changePage', page)"
       >
         {{ page }}
       </button>
   </div>
 </template>
 <script setup>
-import { pagination } from '@/api'
-
-const changePage = (num) => {
-  pagination.value.currentPage = num -1; // api pages starts from 0
-  
-}
+defineProps(['currentPage', 'totalPages']);
+defineEmits(['changePage'])
 </script>
 
 <style scoped>
@@ -34,11 +30,11 @@ const changePage = (num) => {
   height: 2em;
   width:  2em;
   margin-right: 1em;
-  background-color: rgba(255, 0, 255, 0.614);
+  background-color: #FCBAAD;
   border: none;
   border-radius: 30%;
 }
 .pagination-btn.active {
-  background-color: rgb(255, 0, 157);
+  background-color: #E48586;
 }
 </style>
