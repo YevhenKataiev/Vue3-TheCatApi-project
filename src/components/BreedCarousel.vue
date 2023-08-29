@@ -60,10 +60,13 @@ const plusSlides = (n) => {
   position: relative;
   margin: auto;
 }
-
+.slide-wrapper {
+  min-width: 80vw;
+}
 img {
-  object-fit: cover;
-  width: 100%;
+  display: block;
+  /* object-fit: cover; */
+  margin: 0 auto;
   height: 500px;
 }
 .prev, .next {
@@ -87,7 +90,7 @@ img {
 }
 
 .prev:hover, .next:hover {
-  background-color: #FDE5EC;
+  background-color: #FCBAAD;
 }
 
 .dot {
