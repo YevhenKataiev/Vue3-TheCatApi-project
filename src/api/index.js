@@ -12,9 +12,10 @@ export const shareKity = async(payload) => {
       "content-type": "multipart/form-data",
       'x-api-key' : userId,
     }
-  }; 
+  };
   try {
-    await axios.post(`${api_url}/images/upload`, payload, config);
+    const { data }  = await axios.post(`${api_url}/images/upload`, payload, config);
+    return data.approved;
   } catch (error) {
     console.log(error);
   } 
