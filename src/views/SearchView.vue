@@ -12,7 +12,7 @@
     </div>
     <div  class="container">
       <Loader v-if="loading"/>
-      <div v-else-if="!isEmpty(catData)">
+      <div v-if="!isEmpty(catData)">
         <PhotoGallery  :img-arr="catData"/>
         <Pagination
           :current-page="pagination.page"
@@ -21,7 +21,7 @@
         />
       </div>   
       <div v-else>
-        <h3> Nothing founded</h3>
+        <h3> Nothing founded yet</h3>
       </div>
     </div>  
   </main>

@@ -30,11 +30,11 @@ defineEmits(['changePage'])
   height: 2em;
   width:  2em;
   margin-right: 1em;
-  background-color: rgba(255, 0, 255, 0.614);
+  background-color: #FCBAAD;
   border: none;
   border-radius: 30%;
 }
 .pagination-btn.active {
-  background-color: rgb(255, 0, 157);
+  background-color: #E48586;
 }
 </style>
